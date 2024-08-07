@@ -1,4 +1,4 @@
-# commands/sentinel/cve.py
+# commands/defender/cve.py
 
 import asyncio
 from azure_specific.azure_graph_access import get_azure_graph_access, close_azure_graph_access
