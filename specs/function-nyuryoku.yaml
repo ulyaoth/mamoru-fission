@@ -55,6 +55,3 @@ spec:
   secrets:
     - name: mamoru-secrets
   configmaps: []
-  env:
-    - name: AUTHORIZED_SLACK_USERS
-      value: '[{"slack_user_id": "XX"}, {"slack_user_id": "XX"}, {"slack_user_id": "XX"}]'
