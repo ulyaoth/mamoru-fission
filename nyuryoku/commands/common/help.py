@@ -2,7 +2,7 @@
 
 def get_slack_help_menu():
     return (
-        "Thank you for using Mamoru your security assistant!\n\n"
+        "Thank you for using Mamoru your security assistant and more!\n\n"
         "Here are the commands you can use:\n"
         "Common:\n"
         "- `help`: Display this help menu\n"
