@@ -1,0 +1,143 @@
+# Mamoru your security bot
+
+# Nyuryoku Fission Function
+
+This repository contains the bot called Mamoru that uses the `nyuryoku` function for Fission. The function is written in Python and requires certain environment variables to function correctly. This README provides step-by-step instructions for deploying and updating the function on Kubernetes using Fission.
+
+## Initial Setup
+
+### Prerequisites
+
+- Kubernetes cluster with Fission installed.
+- Fission CLI installed
+- Git installed
+
+### Step 1: Initial Secret Creation
+
+Create a Kubernetes secret and config map to store sensitive information:
+
+```sh
+kubectl create secret generic mamoru-secrets --from-literal=SLACK_SIGNING_SECRET=XXX --from-literal=SLACK_APP_ID=XXX --from-literal=AZURE_CLIENT_ID=XXX --from-literal=AZURE_CLIENT_SECRET=XXX --from-literal=AZURE_TENANT_ID=XXX
+  ```
+
+
+```sh
+  kubectl create configmap mamoru-configmap --from-literal=AUTHORIZED_SLACK_USERS='[{"slack_user_id"
+: "XXX"}, {"slack_user_id": "XXX"}, {"slack_user_id": "XXX"}]
+  ```
+
+Obviously replace the XXX with the correct values.
+
+### Step 2: Install fission binary
+
+Download the latest binary from fission, make sure you change the url to latest version.
+
+```sh
+curl -Lo fission https://github.com/fission/fission/releases/download/v1.20.2/fission-v1.20.2-linux-amd64 && chmod +x fission && sudo mv fission /usr/local/bin/
+```
+
+### Step 3: git clone the repository
+
+Clone the repository as you do usually
+
+Extra step if needed:
+```sh
+chmod +x /nyuryoku/build.sh
+```
+
+### Step 4: push the function
+
+Make sure you stand in the directory you git cloned and run the file below.
+
+```sh
+fission spec apply --wait
+```
+This will deploy the function to fission in kubernetes.
+
+### How to update?
+
+Simply update the code from the repo locally and re-run the command
+
+```sh
+fission spec apply --wait
+```
+
+### Create a demo environment
+
+To create a demo environment:
+```sh
+curl -sfL https://get.k3s.io | sh -
+curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+export FISSION_NAMESPACE="fission"
+kubectl create namespace $FISSION_NAMESPACE
+kubectl create -k "github.com/fission/fission/crds/v1?ref=v1.20.2"
+helm repo add fission-charts https://fission.github.io/fission-charts/
+helm repo update
+export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+helm install --version v1.20.2 --namespace $FISSION_NAMESPACE fission fission-charts/fission-all
+curl -Lo fission https://github.com/fission/fission/releases/download/v1.20.2/fission-v1.20.2-linux-amd64 && chmod +x fission && sudo mv fission /usr/local/bin/
+```
+
+To create a new function:
+```sh
+mkdir appname
+cd appname
+mkdir functionname
+touch functionname/function.py
+echo 'def main(): return "Hello, World!"' > functionname/function.py
+touch functionname/requirements.py
+echo 'flask' > functionname/requirements.py 
+touch functionname/build.sh
+
+cat << 'EOF' > functionname/build.sh
+#!/bin/sh
+apk update && apk add linux-headers gcc python3-dev libffi-dev
+
+if [ -f \${SRC_PKG}/requirements.txt ]
+then
+    pip3 install -r \${SRC_PKG}/requirements.txt -t \${SRC_PKG}
+fi
+cp -r \${SRC_PKG} \${DEPLOY_PKG}
+EOF
+
+chmod +x functionname/build.sh
+
+fission spec init
+fission env create --spec --name appname --image fission/python-env --builder fission/python-builder
+fission function create --spec --name functionname --env appname --src "functionname/*" --entrypoint functionname.main
+fission route create --spec --method GET --url /functionname --function functionname --name functionname-get
+fission route create --spec --method POST --url /functionname --function functionname --name functionname-post
+```
+
+As final step I cannot really add that above vi or nano into specs/function-functionname.yaml
+
+You see something like this:
+```yaml
+spec:
+  deployment:
+    checksum: {}
+  environment:
+    name: mamoru
+    namespace: ""
+  source:
+    checksum: {}
+    type: url
+    url: archive://nyuryoku-z89d
+status:
+```
+
+you have to add:   buildcmd: "./build.sh"
+```yaml
+spec:
+  deployment:
+    checksum: {}
+  environment:
+    name: mamoru
+    namespace: ""
+  source:
+    checksum: {}
+    type: url
+    url: archive://nyuryoku-z89d
+  buildcmd: "./build.sh"
+status:
+```

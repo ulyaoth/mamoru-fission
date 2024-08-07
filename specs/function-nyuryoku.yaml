@@ -1,0 +1,60 @@
+include:
+- nyuryoku/*
+kind: ArchiveUploadSpec
+name: nyuryoku-z89d
+
+---
+apiVersion: fission.io/v1
+kind: Package
+metadata:
+  creationTimestamp: null
+  name: nyuryoku-5d87a5b4-9730-4bd6-81f7-df021ef57163
+spec:
+  deployment:
+    checksum: {}
+  environment:
+    name: mamoru
+    namespace: ""
+  source:
+    checksum: {}
+    type: url
+    url: archive://nyuryoku-z89d
+  buildcmd: "./build.sh"
+status:
+  buildstatus: pending
+  lastUpdateTimestamp: "2024-08-05T20:19:07Z"
+
+---
+apiVersion: fission.io/v1
+kind: Function
+metadata:
+  creationTimestamp: null
+  name: nyuryoku
+spec:
+  InvokeStrategy:
+    ExecutionStrategy:
+      ExecutorType: newdeploy
+      MaxScale: 1
+      MinScale: 1
+      SpecializationTimeout: 120
+      TargetCPUPercent: 80
+    StrategyType: execution
+  concurrency: 500
+  environment:
+    name: mamoru
+    namespace: ""
+  functionTimeout: 60
+  idletimeout: 120
+  package:
+    functionName: nyuryoku.nyuryoku
+    packageref:
+      name: nyuryoku-5d87a5b4-9730-4bd6-81f7-df021ef57163
+      namespace: ""
+  requestsPerPod: 1
+  resources: {}
+  secrets:
+    - name: mamoru-secrets
+  configmaps: []
+  env:
+    - name: AUTHORIZED_SLACK_USERS
+      value: '[{"slack_user_id": "XX"}, {"slack_user_id": "XX"}, {"slack_user_id": "XX"}]'

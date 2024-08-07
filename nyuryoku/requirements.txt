@@ -1,0 +1,7 @@
+flask
+msgraph-sdk
+azure-identity
+azure-mgmt-security
+nvdlib
+requests
+asyncio
