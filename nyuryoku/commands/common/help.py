@@ -6,6 +6,7 @@ def get_slack_help_menu():
         "Here are the commands you can use:\n"
         "Common:\n"
         "- `help`: Display this help menu\n"
+        "- `version`: Who doesn't love a version number\n"        
         "- `ip <address>`: Check details for an IP address (IPv4 or IPv6)\n"
         "- `sha <hash>`: Check details for a SHA hash (SHA-1 or SHA-256)\n"
         "- `cve <cve-number>`: Check details for a CVE number (format: CVE-XXXX-XXXX)\n\n"
