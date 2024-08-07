@@ -29,7 +29,7 @@ def handle_slack_command(text, response_url):
         defender_text = text[len("defender "):].strip()
         response_message = run_defender_command(defender_text)
     elif text.startswith("elastic "):
-        elastic_text = text[len("elasitc "):].strip()
+        elastic_text = text[len("elastic "):].strip()
         response_message = run_elastic_command(elastic_text)
     elif text.startswith("tenable "):
         tenable_text = text[len("tenable "):].strip()
