@@ -10,11 +10,13 @@ def get_slack_help_menu():
         "- `sha <hash>`: Check details for a SHA hash (SHA-1 or SHA-256)\n"
         "- `cve <cve-number>`: Check details for a CVE number (format: CVE-XXXX-XXXX)\n\n"
         "Sentinel Commands:\n"
-        "- `sentinel <parameter>`: Check sentinel data for given parameter\n"
+        "- `sentinel help`: Show the available commands for Sentinel\n"
         "Elastic Commands:\n"
-        "- `test`: test\n\n"
-        "Endpoint Commands:\n"
-        "- `sentinel <parameter>`: Check sentinel data for given parameter\n\n"
+        "- `elastic help`: Show the available commands for Elastic\n"
+        "Tenable Commands:\n"
+        "- `tanable help`: Show the available commands for tenable\n"
+        "Defender Commands:\n"
+        "- `defender help`: Show the available commands for defender\n\n"
         "If you have any questions, please reach out to us."
     )
 

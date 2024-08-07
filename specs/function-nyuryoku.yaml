@@ -54,4 +54,5 @@ spec:
   resources: {}
   secrets:
     - name: mamoru-secrets
-  configmaps: []
+  configmaps:
+    - name: mamoru-configmap
