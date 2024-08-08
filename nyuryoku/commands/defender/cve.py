@@ -3,7 +3,7 @@
 import re
 import asyncio
 from azure_specific.azure_graph_access import get_azure_graph_access, close_azure_graph_access
-from nyuryoku.error_handler.errors import error_invalid_cve_format
+from error_handler.errors import error_invalid_cve_format
 from msgraph.generated.security.microsoft_graph_security_run_hunting_query.run_hunting_query_post_request_body import RunHuntingQueryPostRequestBody
 
 async def run_hunting_query(cve_id: str):

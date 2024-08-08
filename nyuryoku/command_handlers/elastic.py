@@ -1,7 +1,7 @@
 # command_handlers/elastic.py
 
 from commands.elastic.help import get_elastic_help_menu
-from nyuryoku.error_handler.errors import error_unknown_command
+from error_handler.errors import error_unknown_command
 
 def run_elastic_command(command: str) -> str:
     if command == "help":

@@ -2,7 +2,7 @@
 
 from commands.defender.help import get_defender_help_menu
 from commands.defender.cve import run_cve_command
-from nyuryoku.error_handler.errors import error_unknown_command
+from error_handler.errors import error_unknown_command
 
 
 def run_defender_command(command: str) -> str:

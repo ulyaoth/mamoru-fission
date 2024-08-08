@@ -4,7 +4,7 @@ import re
 from commands.common.help import get_slack_help_menu
 from commands.common.cve import run_cve_command
 from commands.common.version import get_version
-from nyuryoku.error_handler.errors import error_unknown_command
+from error_handler.errors import error_unknown_command
 
 def run_common_command(command: str) -> str:
     if command == "help":

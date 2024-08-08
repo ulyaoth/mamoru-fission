@@ -1,7 +1,7 @@
 # command_handlers/sentinel.py
 
 from commands.sentinel.help import get_sentinel_help_menu
-from nyuryoku.error_handler.errors import error_unknown_command
+from error_handler.errors import error_unknown_command
 
 def run_sentinel_command(command: str) -> str:
     if command == "help":
