@@ -44,7 +44,7 @@ def is_valid_cve_format(cve: str) -> bool:
 
 def run_cve_command(cve: str) -> str:
     if not is_valid_cve_format(cve):
-        return error_invalid_cve_format(cve)
+        return error_invalid_cve_format(cve, "defender")
     
     query_results = asyncio.run(run_hunting_query(cve))
     if not query_results or not query_results.results:
