@@ -1,4 +1,4 @@
-# slack_handler/slack_user_verification.py
+# slack_specific/slack_user_verification.py
 
 import json
 import logging

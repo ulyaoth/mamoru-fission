@@ -12,6 +12,7 @@ from command_handlers.elastic import run_elastic_command
 from command_handlers.tenable import run_tenable_command
 from command_handlers.user import run_user_command
 from command_handlers.common import run_common_command
+from auth_handlers.auth_methods import verify_user
 
 def send_response(response_url, response_message):
     headers = {
@@ -66,8 +67,11 @@ def handle_slack_request(req):
     if not verify_slack_app(api_app_id):
         return Response(status=200)  # Return 200 without a body to silently discard the request
 
-    if not verify_slack_user(user_id):
-        return Response("Access denied", status=200)
+    try:
+        if not verify_user(user_id):
+            return Response("Access denied", status=200)
+    except ValueError as e:
+        return Response(str(e), status=400)
 
     threading.Thread(target=handle_slack_command, args=(text, response_url)).start()
 

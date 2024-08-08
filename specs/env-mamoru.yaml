@@ -30,3 +30,5 @@ spec:
           memory: "512Mi"
           cpu: "500m"
   version: 3
+  environmentvariables:
+  AUTH_METHOD: "slack_user_verification"
