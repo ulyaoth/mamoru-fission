@@ -1,15 +1,15 @@
 # command_handlers/defender.py
 
-import re
 from commands.defender.help import get_defender_help_menu
 from commands.defender.cve import run_cve_command
-from error_handler.error import error_unknown_defender_command
+from nyuryoku.error_handler.errors import error_unknown_command
 
 
 def run_defender_command(command: str) -> str:
-    if re.match(r'^cve-\d{4}-\d{4,7}$', command):  # CVE validation
-        return run_cve_command(command)
-    elif command == "help":
+    if command == "help":
         return get_defender_help_menu()
+    elif command.startswith("check-cve "):
+        cve_input = command[len("check-cve "):].strip()
+        return run_cve_command(cve_input)
     else:
-        return error_unknown_defender_command(command)
+        return error_unknown_command(command, "defender")

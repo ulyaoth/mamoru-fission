@@ -7,9 +7,6 @@ def get_slack_help_menu():
         "Common:\n"
         "- `help`: Display this help menu\n"
         "- `version`: Who doesn't love a version number\n"        
-        "- `ip <address>`: Check details for an IP address (IPv4 or IPv6)\n"
-        "- `sha <hash>`: Check details for a SHA hash (SHA-1 or SHA-256)\n"
-        "- `cve <cve-number>`: Check details for a CVE number (format: CVE-XXXX-XXXX)\n\n"
         "Sentinel Commands:\n"
         "- `sentinel help`: Show the available commands for Sentinel\n"
         "Elastic Commands:\n"
@@ -17,7 +14,9 @@ def get_slack_help_menu():
         "Tenable Commands:\n"
         "- `tanable help`: Show the available commands for tenable\n"
         "Defender Commands:\n"
-        "- `defender help`: Show the available commands for defender\n\n"
+        "- `defender help`: Show the available commands for defender\n"
+        "User Commands:\n"
+        "- `user help`: Show user specific commands\n\n"
         "If you have any questions, please reach out to us."
     )
 

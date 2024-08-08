@@ -1,9 +1,7 @@
-# commands/defender/cve.py
+# commands/defender/vulnerabilities.py
 
-import re
 import asyncio
 from azure_specific.azure_graph_access import get_azure_graph_access, close_azure_graph_access
-from nyuryoku.error_handler.errors import error_invalid_cve_format
 from msgraph.generated.security.microsoft_graph_security_run_hunting_query.run_hunting_query_post_request_body import RunHuntingQueryPostRequestBody
 
 async def run_hunting_query(cve_id: str):
@@ -24,6 +22,7 @@ def format_response(cve: str, result=None):
         cve_id = result.results[0].additional_data["CveId"]
         device_count = result.results[0].additional_data["DeviceCount"]
         response_message = (
+            f"*CVE finder*\n\n"
             f"*{cve_id}* was found on *{device_count}* devices.\n\n"
             "To see the specific devices, run the following query:\n"
             f"```DeviceTvmSoftwareVulnerabilities\n| where CveId =~ \"{cve_id}\"\n| summarize Devices = strcat_array(make_list(DeviceName), \", \") by CveId\n| project CveId, Devices```\n\n"
@@ -31,6 +30,7 @@ def format_response(cve: str, result=None):
         )
     else:
         response_message = (
+            f"*CVE finder*\n\n"
             f"*{cve}* was not found on any devices.\n\n"
             "To see this manually, use the below query:\n"
             f"```DeviceTvmSoftwareVulnerabilities\n| where CveId =~ \"{cve}\"```\n\n"
@@ -38,14 +38,7 @@ def format_response(cve: str, result=None):
         )
     return response_message
 
-def is_valid_cve_format(cve: str) -> bool:
-    pattern = r'^CVE-\d{4}-\d{4,7}$'
-    return re.match(pattern, cve, re.IGNORECASE) is not None
-
-def run_cve_command(cve: str) -> str:
-    if not is_valid_cve_format(cve):
-        return error_invalid_cve_format(cve)
-    
+def run_vulnerabilities_command(cve: str) -> str:
     query_results = asyncio.run(run_hunting_query(cve))
     if not query_results or not query_results.results:
         return format_response(cve)

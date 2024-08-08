@@ -12,17 +12,44 @@ This repository contains the bot called Mamoru that uses the `nyuryoku` function
 - Fission CLI installed
 - Git installed
 
+Gather the following information:
+- Slack App Signing Secret
+- Slack App ID
+- Slack App Bot User OAuth Token
+- Azure App Client ID
+- Azure App Client Secret
+- Azure Tenant ID
+
+Create minimal the following groups in AzureAD
+mamoru-admin-user (user in the group will have full access)
+mamoru-normal-user (user in the group will have limited access)
+
+You can make additional groups as you see fit with slight changes to the script.
+
 ### Step 1: Initial Secret Creation
 
 Create a Kubernetes secret and config map to store sensitive information:
 
+Base64 encode your secrets on linux for example:
 ```sh
-kubectl create secret generic mamoru-secrets --from-literal=SLACK_SIGNING_SECRET=XXX --from-literal=SLACK_APP_ID=XXX --from-literal=AZURE_CLIENT_ID=XXX --from-literal=AZURE_CLIENT_SECRET=XXX --from-literal=AZURE_TENANT_ID=XXX
-  ```
+echo -n 'your-value' | base64
+```
 
-
+Then fill in the "mamoru-secrets.yaml" file with the strings you get and apply it with following commands:
 ```sh
-  kubectl create configmap mamoru-configmap --from-literal=AUTHORIZED_SLACK_USERS='[{"slack_user_id"
+kubectl apply -f mamoru-secrets.yaml
+```
+
+Alternative just run the below command:
+```sh
+kubectl create secret generic mamoru-secrets --from-literal=SLACK_SIGNING_SECRET=XXX --from-literal=SLACK_APP_ID=XXX --from-literal=SLACK_APP_ID=XXX --from-literal=SLACK-BOT_OAUTH-TOKEN=XXX --from-literal=AZURE_CLIENT_ID=XXX --from-literal=AZURE_CLIENT_SECRET=XXX --from-literal=AZURE_TENANT_ID=XXX
+```
+
+Remember about your history, you might want to run those commands in a way so it does not get into your history.
+
+Not required for now: 
+```sh
+kubectl create configmap mamoru-configmap --from-literal=AUTHORIZED_SLACK_USERS='[{"slack_user_id"
 : "XXX"}, {"slack_user_id": "XXX"}, {"slack_user_id": "XXX"}]
   ```
 

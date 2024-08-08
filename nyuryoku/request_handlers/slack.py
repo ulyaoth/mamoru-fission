@@ -10,6 +10,7 @@ from command_handlers.sentinel import run_sentinel_command
 from command_handlers.defender import run_defender_command
 from command_handlers.elastic import run_elastic_command
 from command_handlers.tenable import run_tenable_command
+from command_handlers.user import run_user_command
 from command_handlers.common import run_common_command
 
 def send_response(response_url, response_message):
@@ -34,6 +35,9 @@ def handle_slack_command(text, response_url):
     elif text.startswith("tenable "):
         tenable_text = text[len("tenable "):].strip()
         response_message = run_tenable_command(tenable_text)
+    elif text.startswith("user "):
+        user_text = text[len("user "):].strip()
+        response_message = run_user_command(user_text)
     else:
         response_message = run_common_command(text)
     
