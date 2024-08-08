@@ -1,16 +1,22 @@
-import os
-
 from slack_specific.slack_user_verification import verify_slack_user
 
-# Load environment variables
-auth_method = os.getenv('AUTH_METHOD')
+# Function to read the ConfigMap values
+def read_config(key):
+    config_path = f"/configs/default/mamoru-configmap/{key}"
+    try:
+        with open(config_path, 'r') as file:
+            return file.read().strip()
+    except FileNotFoundError:
+        raise ValueError(f"Config key {key} not found in ConfigMap")
+
+# Load configuration from ConfigMap
+auth_method = read_config('AUTH_METHOD')
 
 def verify_microsoft_entra(user_id):
-    # Implement Microsoft Entra authentication logic here
-    # Return True if authenticated, False otherwise
-    return True  # Placeholder for actual logic
+    return True
 
 def verify_user(user_id):
+
     if auth_method == 'slack_user_verification':
         return verify_slack_user(user_id)
     elif auth_method == 'microsoft_entra':

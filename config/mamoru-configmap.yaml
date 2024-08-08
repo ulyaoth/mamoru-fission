@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: mamoru-config
+  name: mamoru-configmap
   namespace: default
 data:
   AUTH_METHOD: "slack_user_verification"

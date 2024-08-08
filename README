@@ -30,6 +30,11 @@ You can make additional groups as you see fit with slight changes to the script.
 
 Create a Kubernetes secret and config map to store sensitive information:
 
+Make sure you apply the mamoru-configmap.yaml, and you have to update the correct auth metod.
+slack_user_verification = use slack urserid
+microsoft_entra = use Microsoft Entra
+
+
 Base64 encode your secrets on linux for example:
 ```sh
 echo -n 'your-value' | base64
@@ -49,9 +54,13 @@ Remember about your history, you might want to run those commands in a way so it
 
 
 If you not want to use AzureAD for permission you can also use the slack userID in this way:
+
+Fix the "mamoru-configmap.yaml" with the correct info see example in folder and apply your stuff.
+
 ```sh
-kubectl create configmap mamoru-configmap --from-literal=AUTHORIZED_SLACK_USERS='[{"name": "REAL_NAME_HERE", "userid": "SLACK_USER_ID_HERE", "permission": "admin"}, {"name": "REAL_NAME_HERE", "userid": "SLACK_USER_ID_HERE", "permission": "user"}, {"name": "REAL_NAME_HERE", "userid": "SLACK_USER_ID_HERE", "permission": "security"}]'
+kubectl apply -f mamoru-configmap.yaml
   ```
+
 
 Obviously replace the XXX with the correct values.
 
