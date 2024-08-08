@@ -5,6 +5,6 @@ def get_elastic_help_menu():
         "Thank you for using Mamoru your security assistant and more!\n\n"
         "Here are the Elastic commands you can use:\n"
         "Elastic Commands:\n"
-        "- `help`: Display this help menu\n\n"
+        "- `elastic help`: Display this help menu\n\n"
         "If you have any questions, please reach out to us."
     )
