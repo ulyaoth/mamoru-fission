@@ -27,9 +27,10 @@ def get_authorized_users():
     return authorized_users
 
 def verify_slack_user(user_id: str) -> bool:
+    global user_access, user_realname  # Declare globals here to modify them
     authorized_users = get_authorized_users()
     for user in authorized_users:
-        if user["slack_user_id"] == user_id:
+        if user["userid"] == user_id:
             return True
     logging.warning(f"Unauthorized user: {user_id}")
     return False

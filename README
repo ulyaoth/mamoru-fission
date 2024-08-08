@@ -47,10 +47,10 @@ kubectl create secret generic mamoru-secrets --from-literal=SLACK_SIGNING_SECRET
 
 Remember about your history, you might want to run those commands in a way so it does not get into your history.
 
-Not required for now: 
+
+If you not want to use AzureAD for permission you can also use the slack userID in this way:
 ```sh
-kubectl create configmap mamoru-configmap --from-literal=AUTHORIZED_SLACK_USERS='[{"slack_user_id"
-: "XXX"}, {"slack_user_id": "XXX"}, {"slack_user_id": "XXX"}]
+kubectl create configmap mamoru-configmap --from-literal=AUTHORIZED_SLACK_USERS='[{"name": "REAL_NAME_HERE", "userid": "SLACK_USER_ID_HERE", "permission": "admin"}, {"name": "REAL_NAME_HERE", "userid": "SLACK_USER_ID_HERE", "permission": "user"}, {"name": "REAL_NAME_HERE", "userid": "SLACK_USER_ID_HERE", "permission": "security"}]'
   ```
 
 Obviously replace the XXX with the correct values.
