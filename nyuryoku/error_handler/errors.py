@@ -25,3 +25,10 @@ def error_invalid_vulnerabilities_input(command: str, context: str) -> str:
         "Please specify 'low', 'medium', 'high', or 'total'.\n"
         f"Please see /mamoru {context} help for a list of acceptable commands."
     )
+
+def error_permission_denied(command: str) -> str:
+    return (
+        f"*Access Denied*\n\nYou do not have the necessary permissions to execute the *{command}* command.\n"
+        "Please contact your system administrator if you believe this is an error.\n"
+        "You can see the list of available commands for your role using `/mamoru help`."
+    )

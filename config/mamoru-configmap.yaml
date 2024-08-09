@@ -9,5 +9,5 @@ data:
     [
       {"name": "Example User", "userid": "U0IB44ZER", "permission": "admin"},
       {"name": "XXX", "userid": "XXX", "permission": "user"},
-      {"name": "XXX", "userid": "XXX", "permission": "security"}
+      {"name": "XXX", "userid": "XXX", "permission": "guest"}
     ]

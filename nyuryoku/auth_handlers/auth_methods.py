@@ -1,3 +1,5 @@
+# auth_handlers/auth_methods.py
+
 from slack_specific.slack_user_verification import verify_slack_user
 
 # Function to read the ConfigMap values

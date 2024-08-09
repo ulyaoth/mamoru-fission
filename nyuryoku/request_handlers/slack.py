@@ -2,6 +2,7 @@ import urllib.parse
 import json
 import requests
 import threading
+import role_handlers.roles # so the roles are loaded
 from flask import request, Response
 from slack_specific.slack_request_verification import verify_slack_request
 from slack_specific.slack_app_verification import verify_slack_app
@@ -34,24 +35,24 @@ def send_response(response_url, response_message):
     response = requests.post(response_url, json=response_data, headers=headers)
     response.raise_for_status()
 
-def handle_slack_command(text, response_url):
+def handle_slack_command(text, response_url, myaccess, user_realname):
     if text.startswith("sentinel "):
         sentinel_text = text[len("sentinel "):].strip()
-        response_message = run_sentinel_command(sentinel_text)
+        response_message = run_sentinel_command(sentinel_text, myaccess)
     elif text.startswith("defender "):
         defender_text = text[len("defender "):].strip()
-        response_message = run_defender_command(defender_text)
+        response_message = run_defender_command(defender_text, myaccess)
     elif text.startswith("elastic "):
         elastic_text = text[len("elastic "):].strip()
-        response_message = run_elastic_command(elastic_text)
+        response_message = run_elastic_command(elastic_text, myaccess)
     elif text.startswith("tenable "):
         tenable_text = text[len("tenable "):].strip()
-        response_message = run_tenable_command(tenable_text)
+        response_message = run_tenable_command(tenable_text, myaccess)
     elif text.startswith("user "):
         user_text = text[len("user "):].strip()
-        response_message = run_user_command(user_text)
+        response_message = run_user_command(user_text, myaccess, user_realname)
     else:
-        response_message = run_common_command(text)
+        response_message = run_common_command(text, myaccess)
     
     send_response(response_url, response_message)
 
@@ -78,13 +79,12 @@ def handle_slack_request(req):
     if not verify_slack_app(api_app_id):
         return Response(status=200)  # Return 200 without a body to silently discard the request
 
-    try:
-        if not verify_user(user_id):
-            return Response("Access denied", status=200)
-    except ValueError as e:
-        return Response(str(e), status=400)
+    is_verified, myaccess, user_realname = verify_user(user_id)
+    
+    if not is_verified:
+        return Response("Access denied", status=200)
 
-    threading.Thread(target=handle_slack_command, args=(text, response_url)).start()
+    threading.Thread(target=handle_slack_command, args=(text, response_url, myaccess, user_realname)).start()
 
     return Response(status=200)
 

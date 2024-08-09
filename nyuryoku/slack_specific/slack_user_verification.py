@@ -26,10 +26,10 @@ def get_authorized_users():
         authorized_users = []
     return authorized_users
 
-def verify_slack_user(user_id: str) -> bool:
+def verify_slack_user(user_id: str):
     authorized_users = get_authorized_users()
     for user in authorized_users:
         if user["userid"] == user_id:
-            return True
+            return True, user["permission"], user["name"]  # Return True and the user's permission
     logging.warning(f"Unauthorized user: {user_id}")
-    return False
+    return False, None  # Return False and None if the user is not authorized

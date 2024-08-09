@@ -2,12 +2,21 @@
 
 from commands.user.help import get_user_help_menu
 from commands.user.myinfo import get_user_myinfo_menu
-from error_handler.errors import error_unknown_command
+from error_handler.errors import error_unknown_command, error_permission_denied
+from role_handlers.role_registry import check_permission
 
-def run_user_command(command: str) -> str:
+def run_user_command(command: str, myaccess: str, user_realname: str) -> str:
     if command == "help":
-        return get_user_help_menu()
+        if check_permission("user:help", myaccess):
+            return get_user_help_menu()
+        else:
+            return error_permission_denied(command)
+    
     elif command == "myinfo":
-        return get_user_myinfo_menu()
+        if check_permission("user:myinfo", myaccess, user_realname):
+            return get_user_myinfo_menu()
+        else:
+            return error_permission_denied(command)
+    
     else:
         return error_unknown_command(command, "user")
