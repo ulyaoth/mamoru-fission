@@ -18,10 +18,21 @@ def send_response(response_url, response_message):
     headers = {
         'Content-Type': 'application/json'
     }
-    response_data = {
-        "text": response_message
-    }
-    requests.post(response_url, json=response_data, headers=headers)
+
+    # Check if response_message is a string or a list (blocks)
+    if isinstance(response_message, str):
+        response_data = {
+            "text": response_message
+        }
+    elif isinstance(response_message, list):
+        response_data = {
+            "blocks": response_message
+        }
+    else:
+        raise ValueError("response_message must be either a string (for text) or a list (for blocks).")
+
+    response = requests.post(response_url, json=response_data, headers=headers)
+    response.raise_for_status()
 
 def handle_slack_command(text, response_url):
     if text.startswith("sentinel "):
