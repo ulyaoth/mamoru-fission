@@ -13,8 +13,8 @@ def run_user_command(command: str, myaccess: str, user_realname: str) -> str:
             return error_permission_denied(command)
     
     elif command == "myinfo":
-        if check_permission("user:myinfo", myaccess, user_realname):
-            return get_user_myinfo_menu()
+        if check_permission("user:myinfo", myaccess):
+            return get_user_myinfo_menu(myaccess, user_realname)
         else:
             return error_permission_denied(command)
     
