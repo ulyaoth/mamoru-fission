@@ -56,3 +56,4 @@ spec:
     - name: mamoru-secrets
   configmaps:
     - name: mamoru-configmap
+    - name: mamoru-roles-configmap

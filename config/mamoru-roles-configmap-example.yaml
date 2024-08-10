@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mamoru-roles-configmap
+  namespace: default
+data:
+  roles: |
+    {
+      "user": ["common:help", "common:version", "user:help", "user:myinfo"],
+      "guest": ["common:help"],
+    }
