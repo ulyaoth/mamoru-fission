@@ -6,13 +6,6 @@ import role_handlers.roles # so the roles are loaded
 from flask import request, Response
 from slack_specific.slack_request_verification import verify_slack_request
 from slack_specific.slack_app_verification import verify_slack_app
-from slack_specific.slack_user_verification import verify_slack_user
-from command_handlers.sentinel import run_sentinel_command
-from command_handlers.defender import run_defender_command
-from command_handlers.elastic import run_elastic_command
-from command_handlers.tenable import run_tenable_command
-from command_handlers.user import run_user_command
-from command_handlers.common import run_common_command
 from command_handlers.command_registry import command_registry
 from auth_handlers.auth_methods import verify_user
 

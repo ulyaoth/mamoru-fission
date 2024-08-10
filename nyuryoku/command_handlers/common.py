@@ -13,18 +13,18 @@ def run_common_command(command: str, myaccess: str) -> str:
             return get_slack_help_menu(myaccess)
         else:
             return error_permission_denied(command)
-    
+
     elif command == "version":
         if check_permission("common:version", myaccess):
             return get_version()
         else:
             return error_permission_denied(command)
-    
+
     elif re.match(r'^cve-\d{4}-\d{4,7}$', command):
         if check_permission("common:cve", myaccess):
             return run_cve_command(command)
         else:
             return error_permission_denied(command)
-    
+
     else:
         return error_unknown_command(command, "common")
