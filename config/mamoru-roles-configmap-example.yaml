@@ -7,5 +7,5 @@ data:
   roles: |
     {
       "user": ["common:help", "common:version", "user:help", "user:myinfo"],
-      "guest": ["common:help"],
+      "guest": ["common:help"]
     }

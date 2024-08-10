@@ -13,6 +13,7 @@ from command_handlers.elastic import run_elastic_command
 from command_handlers.tenable import run_tenable_command
 from command_handlers.user import run_user_command
 from command_handlers.common import run_common_command
+from command_handlers.command_registry import command_registry
 from auth_handlers.auth_methods import verify_user
 
 def send_response(response_url, response_message):
@@ -36,24 +37,23 @@ def send_response(response_url, response_message):
     response.raise_for_status()
 
 def handle_slack_command(text, response_url, myaccess, user_realname):
-    if text.startswith("sentinel "):
-        sentinel_text = text[len("sentinel "):].strip()
-        response_message = run_sentinel_command(sentinel_text, myaccess)
-    elif text.startswith("defender "):
-        defender_text = text[len("defender "):].strip()
-        response_message = run_defender_command(defender_text, myaccess)
-    elif text.startswith("elastic "):
-        elastic_text = text[len("elastic "):].strip()
-        response_message = run_elastic_command(elastic_text, myaccess)
-    elif text.startswith("tenable "):
-        tenable_text = text[len("tenable "):].strip()
-        response_message = run_tenable_command(tenable_text, myaccess)
-    elif text.startswith("user "):
-        user_text = text[len("user "):].strip()
-        response_message = run_user_command(user_text, myaccess, user_realname)
+    # Split the command into its main prefix and the rest of the command
+    command_parts = text.split(" ", 1)
+    prefix = command_parts[0]
+    command_body = command_parts[1] if len(command_parts) > 1 else ""
+
+    # Check if the prefix exists in the registry
+    if prefix in command_registry:
+        # Call the associated handler function
+        if prefix == "user":
+            # If the command requires the real name, pass it as well
+            response_message = command_registry[prefix](command_body, myaccess, user_realname)
+        else:
+            response_message = command_registry[prefix](command_body, myaccess)
     else:
-        response_message = run_common_command(text, myaccess)
-    
+        # Handle unknown commands or fall back to a default handler
+        response_message = command_registry.get("common")(text, myaccess)
+
     send_response(response_url, response_message)
 
 def handle_slack_request(req):
