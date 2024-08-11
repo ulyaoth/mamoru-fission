@@ -1,179 +1,40 @@
-# Mamoru your security bot
+<p align="center">
+  <img src="https://raw.githubusercontent.com/ulyaoth/mamoru-fission/main/slack-bot-image-512x512.png" />
+  <br>
+  <h1 align="center">Mamoru: your security assistant and more!</h1>
+</p>
 
-# Nyuryoku Fission Function
+<p align="center">
+  <a href="https://github.com/ulyaoth/mamoru-fission/blob/main/LICENSE">
+    <img alt="Mamoru Licence" src="https://img.shields.io/github/license/ulyaoth/mamoru-fission">
+  </a>
+  <a href="https://github.com/ulyaoth/mamoru-fission/releases">
+    <img alt="Mamoru Releases" src="https://img.shields.io/github/release-pre/ulyaoth/mamoru-fission.svg">
+  </a>
+  <a href="https://github.com/ulyaoth/mamoru-fission/graphs/contributors">
+    <img alt="Fission contributors" src="https://img.shields.io/github/contributors/ulyaoth/mamoru-fission">
+  </a>
+  <a href="https://github.com/ulyaoth/mamoru-fission/commits/main">
+    <img alt="Commit Activity" src="https://img.shields.io/github/commit-activity/m/ulyaoth/mamoru-fission">
+  </a>
+  <br>
+  <a href="https://github.com/ulyaoth/mamoru-fission">
+    <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/ulyaoth/mamoru-fission?style=social">
+  </a>
+</p>
 
-This repository contains the bot called Mamoru that uses the `nyuryoku` function for Fission. The function is written in Python and requires certain environment variables to function correctly. This README provides step-by-step instructions for deploying and updating the function on Kubernetes using Fission.
+--------------
 
-## Initial Setup
+Mamoru is an open-source bot written in Python designed to run commands in Slack, with a focus on security. The idea is that it can execute commands targeting tools like Defender, Elastic Stack, and other systems, and provide information in return.
 
-### Prerequisites
+Table of Contents
+=================
+- [Table of Contents](#table-of-contents)
+  - [Performance: 100msec cold start](#performance-100msec-cold-start)
+  - [1](#1)
+  - [2](#2)
+- [License](#license)
 
-- Kubernetes cluster with Fission installed.
-- Fission CLI installed
-- Git installed
+# License
 
-Gather the following information:
-- Slack App Signing Secret
-- Slack App ID
-- Slack App Bot User OAuth Token
-- Azure App Client ID
-- Azure App Client Secret
-- Azure Tenant ID
-
-Create minimal the following groups in AzureAD
-mamoru-admin-user (user in the group will have full access)
-mamoru-normal-user (user in the group will have limited access)
-
-You can make additional groups as you see fit with slight changes to the script.
-
-### Step 1: Initial Secret Creation
-
-Create a Kubernetes secret and config map to store sensitive information:
-
-Make sure you apply the mamoru-configmap.yaml, and you have to update the correct auth metod.
-slack_user_verification = use slack urserid
-microsoft_entra = use Microsoft Entra
-
-
-Base64 encode your secrets on linux for example:
-```sh
-echo -n 'your-value' | base64
-```
-
-Then fill in the "mamoru-secrets.yaml" file with the strings you get and apply it with following commands:
-```sh
-kubectl apply -f mamoru-secrets.yaml
-```
-
-Alternative just run the below command:
-```sh
-kubectl create secret generic mamoru-secrets --from-literal=SLACK_SIGNING_SECRET=XXX --from-literal=SLACK_APP_ID=XXX --from-literal=SLACK_APP_ID=XXX --from-literal=SLACK-BOT_OAUTH-TOKEN=XXX --from-literal=AZURE_CLIENT_ID=XXX --from-literal=AZURE_CLIENT_SECRET=XXX --from-literal=AZURE_TENANT_ID=XXX
-```
-
-Remember about your history, you might want to run those commands in a way so it does not get into your history.
-
-
-If you not want to use AzureAD for permission you can also use the slack userID in this way:
-
-Fix the "mamoru-configmap.yaml" with the correct info see example in folder and apply your stuff.
-
-```sh
-kubectl apply -f mamoru-configmap.yaml
-  ```
-
-
-Obviously replace the XXX with the correct values.
-
-### Step 2: Install fission binary
-
-Download the latest binary from fission, make sure you change the url to latest version.
-
-```sh
-curl -Lo fission https://github.com/fission/fission/releases/download/v1.20.2/fission-v1.20.2-linux-amd64 && chmod +x fission && sudo mv fission /usr/local/bin/
-```
-
-### Step 3: git clone the repository
-
-Clone the repository as you do usually
-
-Extra step if needed:
-```sh
-chmod +x /nyuryoku/build.sh
-```
-
-### Step 4: push the function
-
-Make sure you stand in the directory you git cloned and run the file below.
-
-```sh
-fission spec apply --wait
-```
-This will deploy the function to fission in kubernetes.
-
-### How to update?
-
-Simply update the code from the repo locally and re-run the command
-
-```sh
-fission spec apply --wait
-```
-
-### Create a demo environment
-
-To create a demo environment:
-```sh
-curl -sfL https://get.k3s.io | sh -
-curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
-export FISSION_NAMESPACE="fission"
-kubectl create namespace $FISSION_NAMESPACE
-kubectl create -k "github.com/fission/fission/crds/v1?ref=v1.20.2"
-helm repo add fission-charts https://fission.github.io/fission-charts/
-helm repo update
-export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
-helm install --version v1.20.2 --namespace $FISSION_NAMESPACE fission fission-charts/fission-all
-curl -Lo fission https://github.com/fission/fission/releases/download/v1.20.2/fission-v1.20.2-linux-amd64 && chmod +x fission && sudo mv fission /usr/local/bin/
-```
-
-To create a new function:
-```sh
-mkdir appname
-cd appname
-mkdir functionname
-touch functionname/function.py
-echo 'def main(): return "Hello, World!"' > functionname/function.py
-touch functionname/requirements.py
-echo 'flask' > functionname/requirements.py 
-touch functionname/build.sh
-
-cat << 'EOF' > functionname/build.sh
-#!/bin/sh
-apk update && apk add linux-headers gcc python3-dev libffi-dev
-
-if [ -f \${SRC_PKG}/requirements.txt ]
-then
-    pip3 install -r \${SRC_PKG}/requirements.txt -t \${SRC_PKG}
-fi
-cp -r \${SRC_PKG} \${DEPLOY_PKG}
-EOF
-
-chmod +x functionname/build.sh
-
-fission spec init
-fission env create --spec --name appname --image fission/python-env --builder fission/python-builder
-fission function create --spec --name functionname --env appname --src "functionname/*" --entrypoint functionname.main
-fission route create --spec --method GET --url /functionname --function functionname --name functionname-get
-fission route create --spec --method POST --url /functionname --function functionname --name functionname-post
-```
-
-As final step I cannot really add that above vi or nano into specs/function-functionname.yaml
-
-You see something like this:
-```yaml
-spec:
-  deployment:
-    checksum: {}
-  environment:
-    name: mamoru
-    namespace: ""
-  source:
-    checksum: {}
-    type: url
-    url: archive://nyuryoku-z89d
-status:
-```
-
-you have to add:   buildcmd: "./build.sh"
-```yaml
-spec:
-  deployment:
-    checksum: {}
-  environment:
-    name: mamoru
-    namespace: ""
-  source:
-    checksum: {}
-    type: url
-    url: archive://nyuryoku-z89d
-  buildcmd: "./build.sh"
-status:
-```
+Fission is licensed under the European Union Public License 1.2 - see the [LICENSE](./LICENSE) file for details
