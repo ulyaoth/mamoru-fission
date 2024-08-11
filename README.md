@@ -35,6 +35,9 @@ Table of Contents
   - [Microsoft Connection](#microsoft-connection)
   - [Microsoft Entra Auth](#microsoft-entra-auth)
   - [Slack User Auth](#slack-user-auth)
+  - [User Role](#user-roles)
+  - [How to Install](#how-to-install)
+  - [Create a DEMO Environment](#create-a-demo-environment)
 - [License](#license)
 
 ## Prerequisites
@@ -50,6 +53,8 @@ If you want to use this bot in Slack, you need to create a Slack app and gather 
 - Slack App Signing Secret
 - Slack App ID
 - Slack App Bot User OAuth Token
+
+Look at the secrets [example](./config/mamoru-secrets-example.yaml).
 
 ## Microsoft Connection
 
@@ -77,6 +82,10 @@ Windows Defender ATP:
 
 Most of the default commands use the permissions listed above. If you want to perform other tasks in Azure, make sure to adjust the permissions accordingly.
 
+Make sure you update your secret with the required information.
+Secrets [example](./config/mamoru-secrets-example.yaml).
+
+
 ## Microsoft Entra Auth
 
 In order to use Microsoft Entra Authentication, ensure that you add the necessary permissions to your application in Entra.
@@ -102,7 +111,93 @@ Please note that if you use Slack with Microsoft Entra Authentication, it only w
 
 Here's how it works: The process retrieves the user's Slack user ID, queries the Slack API, and then retrieves the associated email address. Once it has the email, it will attempt to find the user in Entra and verify if they belong to the appropriate Mamoru group (user, admin, or guest)."
 
+## Slack User Auth
 
+This authentication method can only be used if your bot is exclusively used in Slack. Unfortunately, it is a very manual implementation, so you'll need to keep things up to date yourself.
+
+Open the following configmap [example](./config/mamoru-configmap-slack_user_verification_example.yaml)
+
+Make sure you use: AUTH_METHOD: "slack_user_verification"
+
+And then create the following:
+
+  AUTHORIZED_SLACK_USERS: |
+    [
+      {"name": "Example User", "userid": "U0IB44ZER", "permission": "admin"},
+      {"name": "XXX", "userid": "XXX", "permission": "user"},
+      {"name": "XXX", "userid": "XXX", "permission": "guest"}
+    ]
+
+As you can see, it's manual work to keep this up to date, you'll need to manually enter the name of each person and their Slack user ID.
+
+## User Roles
+
+The app is mostly dynamic, allowing you to create your own user roles. However, these custom roles might not fully integrate with the help files.
+
+Currently supported roles: guest, user, and admin.
+
+The admin role has default access and should never need to be included in the roles configmap.
+
+Refer to the roles configmap [example](./config/mamoru-roles-configmap-example.yaml)
+
+As you can see, it's fairly straightforward—decide for yourself which roles should have access to specific commands.
+
+## How to Install
+
+Example for an already existing kubernetes environment with fission and their cli installed:
+
+```bash
+# Download the mamoru code
+git clone git@github.com:ulyaoth/mamoru-fission.git
+```
+
+Inside "mamoru-fission/config":
+Now alter the config files for your needs and apply them you should end up with 2 configmaps and 1 secret.
+
+You can apply a configmap or secret as below.
+```bash
+kubectl apply -f example.yaml
+```
+
+Once you applied all three files with your correct info then go to the main folder "mamoru-fission" and run:
+
+```bash
+fission spec apply --wait
+```
+
+## Create a DEMO Environment
+
+Start a fresh install server and run the following commands:
+
+Make sure to check for the latest fission version first.
+
+```bash
+curl -sfL https://get.k3s.io | sh -
+curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+export FISSION_NAMESPACE="fission"
+kubectl create namespace $FISSION_NAMESPACE
+kubectl create -k "github.com/fission/fission/crds/v1?ref=v1.20.3"
+helm repo add fission-charts https://fission.github.io/fission-charts/
+helm repo update
+export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+helm install --version v1.20.3 --namespace $FISSION_NAMESPACE fission fission-charts/fission-all
+curl -Lo fission https://github.com/fission/fission/releases/download/v1.20.3/fission-v1.20.3-linux-amd64 && chmod +x fission && sudo mv fission /usr/local/bin/
+git clone git@github.com:ulyaoth/mamoru-fission.git
+```
+
+Inside "mamoru-fission/config":
+Now alter the config files for your needs and apply them you should end up with 2 configmaps and 1 secret.
+
+You can apply a configmap or secret as below.
+```bash
+kubectl apply -f example.yaml
+```
+
+Once you applied all three files with your correct info then go to the main folder "mamoru-fission" and run:
+
+```bash
+fission spec apply --wait
+```
 
 # License
 
