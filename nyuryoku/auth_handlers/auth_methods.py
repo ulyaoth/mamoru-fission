@@ -1,6 +1,7 @@
 # auth_handlers/auth_methods.py
 
 from slack_specific.slack_user_verification import verify_slack_user
+from auth_handlers.microsoft_entra import verify_microsoft_entra_user
 
 # Function to read the ConfigMap values
 def read_config(key):
@@ -14,14 +15,10 @@ def read_config(key):
 # Load configuration from ConfigMap
 auth_method = read_config('AUTH_METHOD')
 
-def verify_microsoft_entra(user_id):
-    return True
-
-def verify_user(user_id):
-
+def verify_user(user_id, source):
     if auth_method == 'slack_user_verification':
         return verify_slack_user(user_id)
     elif auth_method == 'microsoft_entra':
-        return verify_microsoft_entra(user_id)
+        return verify_microsoft_entra_user(user_id, source)
     else:
         raise ValueError("Invalid authentication method")

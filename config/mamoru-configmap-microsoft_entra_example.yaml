@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mamoru-configmap
+  namespace: default
+data:
+  AUTH_METHOD: "microsoft_entra"
+  MICROSOFT_ENTRA_GROUPS: |
+    {
+      "admin": {
+        "name": "mamoru-access-admin-sg",
+        "id": "e3bad832-52a5-4f6f-8e85-d895dea6900b"
+      },
+      "user": {
+        "name": "mamoru-access-user-sg",
+        "id": "53d85085-7f43-4b8c-bf79-d9dc80ef39cc"
+      },
+      "guest": {
+        "name": "mamoru-access-guest-sg",
+        "id": "6865e538-42cc-4209-972f-7ba5db17d6f3"
+      }
+    }

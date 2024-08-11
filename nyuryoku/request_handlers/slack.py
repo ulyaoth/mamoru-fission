@@ -72,7 +72,7 @@ def handle_slack_request(req):
     if not verify_slack_app(api_app_id):
         return Response(status=200)  # Return 200 without a body to silently discard the request
 
-    is_verified, myaccess, user_realname = verify_user(user_id)
+    is_verified, myaccess, user_realname = verify_user(user_id, source="slack")
     
     if not is_verified:
         return Response("Access denied", status=200)
