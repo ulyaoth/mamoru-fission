@@ -32,3 +32,10 @@ def error_permission_denied(command: str) -> str:
         "Please contact your system administrator if you believe this is an error.\n"
         "You can see the list of available commands for your role using `/mamoru help`."
     )
+
+def error_invalid_ip_input(ip_input: str) -> str:
+    return (
+        f"*Invalid IP Address*\n\nThe IP address *{ip_input}* is not valid.\n"
+        "Please enter a valid IPv4 or IPv6 address and try again.\n"
+        "If you need help with the command syntax, you can use `/mamoru help`."
+    )
