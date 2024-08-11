@@ -1,3 +1,5 @@
+# commands/defender/vulnerabilities.py
+
 import asyncio
 from azure_specific.azure_graph_access import get_azure_graph_access, close_azure_graph_access
 from error_handler.errors import error_invalid_vulnerabilities_input
