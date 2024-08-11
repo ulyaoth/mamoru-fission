@@ -33,6 +33,7 @@ Table of Contents
   - [Prerequisites](#prerequisites)
   - [Slack bot](#slack-bot)
   - [Microsoft Connection](#microsoft-connection)
+  - [Microsoft Entra Auth](#microsoft-entra-auth)
   - [Slack User Auth](#slack-user-auth)
 - [License](#license)
 
@@ -64,6 +65,7 @@ Microsoft Graph:
 * Device.Read.All
 * DeviceManagementManagedDevices.Read.All
 * ThreatHunting.Read.All
+* Application.Read.All
 
 Microsoft Threat Protection:
 * Incident.Read.All
@@ -74,6 +76,33 @@ Windows Defender ATP:
 * Vulnerability.Read.All
 
 Most of the default commands use the permissions listed above. If you want to perform other tasks in Azure, make sure to adjust the permissions accordingly.
+
+## Microsoft Entra Auth
+
+In order to use Microsoft Entra Authentication, ensure that you add the necessary permissions to your application in Entra.
+
+Required permissions under 'Microsoft Graph':
+* User.Read.All
+* Directory.Read.All
+* Group.Read.All
+
+Create the following groups in Microsoft Entra:
+- mamoru-access-user-sg
+- mamoru-access-guest-sg
+- mamoru-access-admin-sg
+
+Then, add the appropriate individuals to those groups as needed.
+
+Next, refer to the configmap [example](./config/mamoru-configmap-microsoft_entra_example.yaml)
+
+Ensure that you update the configmap accordingly.
+
+Explanation on Authentication:
+Please note that if you use Slack with Microsoft Entra Authentication, it only works if your Slack users have the same email address as the one used in Microsoft Entra.
+
+Here's how it works: The process retrieves the user's Slack user ID, queries the Slack API, and then retrieves the associated email address. Once it has the email, it will attempt to find the user in Entra and verify if they belong to the appropriate Mamoru group (user, admin, or guest)."
+
+
 
 # License
 
