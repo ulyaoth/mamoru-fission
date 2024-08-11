@@ -32,6 +32,7 @@ Table of Contents
 - [Table of Contents](#table-of-contents)
   - [Prerequisites](#prerequisites)
   - [Slack bot](#slack-bot)
+  - [Teams bot](#teams-bot)
   - [Microsoft Connection](#microsoft-connection)
   - [Microsoft Entra Auth](#microsoft-entra-auth)
   - [Slack User Auth](#slack-user-auth)
@@ -55,6 +56,18 @@ If you want to use this bot in Slack, you need to create a Slack app and gather 
 - Slack App Bot User OAuth Token
 
 Look at the secrets [example](./config/mamoru-secrets-example.yaml).
+
+## Teams bot
+
+If you want to use this bot in Team, you need to have a Teams app, connected to a teams bot, this bot should post to your functions endpoint, you also need a managed identity configured and have the following permissions minimal:
+
+Microsoft Graph:
+* Chat.ReadWrite
+* User.Read
+* Directory.Read.All
+* Team.ReadBasic.All
+* ChannelMessage.Send
+* Channel.ReadBasic.All
 
 ## Microsoft Connection
 
